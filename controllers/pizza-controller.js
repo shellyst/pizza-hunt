@@ -8,6 +8,15 @@ const pizzaController = {
   // .find() === .findAll()
   getAllPizza(req, res) {
     Pizza.find({})
+      // Populate the comment field with comment content.
+      .populate({
+        path: "comments",
+        // We don't want this field returned.
+        select: "-__v",
+      })
+      .select("-__v")
+      // To return the newest pizza first.
+      .sort({ _id: -1 })
       .then((dbPizzaData) => res.json(dbPizzaData))
       .catch((err) => {
         console.log(err);
@@ -18,6 +27,11 @@ const pizzaController = {
   // get one pizza by id
   getPizzaById({ params }, res) {
     Pizza.findOne({ _id: params.id })
+      .populate({
+        path: "comments",
+        select: "-__v",
+      })
+      .select("-__v")
       .then((dbPizzaData) => res.json(dbPizzaData))
       .catch((err) => {
         console.log(err);
